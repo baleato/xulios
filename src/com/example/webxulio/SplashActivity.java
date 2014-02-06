@@ -13,8 +13,11 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.example.webxulio.utils.AppKeyHandler;
+
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Window;
 import android.webkit.WebView;
@@ -25,18 +28,9 @@ public class SplashActivity extends Activity {
     
     private static String APP_TAG = "Xulio's";
 
-    /*
-     * TODO:
-     * "La URL debe ser configurable."
-     * "La app debe tener un campo de texto para metar la URL 
-     * que se cargará. para entrar en esa pantalla de de configuración
-     * se podría hacer algo así como tocar las 4 esquinas en un
-     *  orden concreto o algo similar." 
-     */
-	private static final String URL = "http://www.google.com";
-	private static final String POST_ERROR_URL = null;
-	
 	private boolean errors = false;
+
+    private AppKeyHandler appKeyHandler;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -76,11 +70,13 @@ public class SplashActivity extends Activity {
 		            }
 				});
 
-		myWebView.loadUrl(URL);
+		appKeyHandler = new AppKeyHandler(this);
+		myWebView.loadUrl(appKeyHandler.getURL());
 	}
 
 	public void postData(final int errorCode, final String description, final String failingUrl) {
-	    if(POST_ERROR_URL == null)
+	    final String postURL = appKeyHandler.getErrorPostURL();
+	    if(TextUtils.isEmpty(postURL))
 	        return;
 
 		(new Thread(){
@@ -88,7 +84,7 @@ public class SplashActivity extends Activity {
 			public void run() {
 				super.run();
 			    HttpClient httpclient = new DefaultHttpClient();
-			    HttpPost httppost = new HttpPost(POST_ERROR_URL);
+			    HttpPost httppost = new HttpPost(postURL); 
 
 			    try {
 			        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
