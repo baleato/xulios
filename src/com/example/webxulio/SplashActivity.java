@@ -118,6 +118,7 @@ public class SplashActivity extends Activity {
 						super.onReceivedError(view, errorCode, description, failingUrl);
 						errors = true;
 
+                        setContentView(R.layout.splash_activity);
                         ImageView imageView = (ImageView) findViewById(R.id.imageView1);
                         imageView.setImageResource(R.drawable.connection_error);
                         setGestureHandler((View) imageView.getParent());
