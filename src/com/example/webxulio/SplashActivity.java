@@ -120,6 +120,7 @@ public class SplashActivity extends Activity {
 
                         ImageView imageView = (ImageView) findViewById(R.id.imageView1);
                         imageView.setImageResource(R.drawable.connection_error);
+                        setGestureHandler((View) imageView.getParent());
 
 						Log.d(APP_TAG, "onReceivedError: " +
 							"\n\terrorCode:" + errorCode +
@@ -130,7 +131,7 @@ public class SplashActivity extends Activity {
 
 					}
 
-					@Override
+                    @Override
 		            public void onPageFinished(WebView view, String url) {
 					    Log.d(APP_TAG, "onPageFinished: " + url);
 					    if(!errors){
@@ -139,19 +140,23 @@ public class SplashActivity extends Activity {
 		            }
 				});
 
-		myWebView.setOnTouchListener(new OnTouchListener() {
-
-		    @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                mDetector.onTouchEvent(event);
-                return false;
-            }
-        });
+		setGestureHandler(myWebView);
 
 		appKeyHandler = new AppKeyHandler(this);
 		loadURL = appKeyHandler.getURL();
 		myWebView.loadUrl(loadURL);
 	}
+
+    private void setGestureHandler(View view) {
+        view.setOnTouchListener(new OnTouchListener() {
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mDetector.onTouchEvent(event);
+                return false;
+            }
+        });
+    }
 
     @Override
     protected void onResume() {
